@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台订单管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .refresh-btn {
+            padding: 10px 20px;
+            background-color: #4ecdc4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .refresh-btn:hover {
+            background-color: #45b7aa;
+        }
+        .orders-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .order-item {
+            background-color: #fafafa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4ecdc4;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .order-id {
+            font-weight: bold;
+            color: #4ecdc4;
+            font-size: 1.1rem;
+        }
+        .order-info {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .table-number {
+            font-weight: bold;
+            color: #333;
+        }
+        .order-time {
+            font-style: italic;
+        }
+        .status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .status.pending {
+            background-color: #ffeaa7;
+            color: #856404;
+        }
+        .status.completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .items-list {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        .item-name {
+            font-weight: bold;
+        }
+        .item-details {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+        .item-quantity {
+            color: #666;
+        }
+        .item-price {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .order-total {
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #ff6b6b;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        .empty-orders {
+            text-align: center;
+            color: #999;
+            padding: 50px 0;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>后台订单管理系统</h1>
+        <div class="controls">
+            <button class="refresh-btn" onclick="loadOrders()">刷新订单</button>
+        </div>
+        <div class="orders-container">
+            <div id="ordersList"></div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后加载订单
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+        });
+
+        // 从本地存储加载订单
+        function loadOrders() {
+            const orders = getOrdersFromLocalStorage();
+            renderOrders(orders);
+        }
+
+        // 从本地存储获取订单
+        function getOrdersFromLocalStorage() {
+            const orders = localStorage.getItem('orders');
+            return orders ? JSON.parse(orders) : [];
+        }
+
+        // 渲染订单列表
+        function renderOrders(orders) {
+            const ordersList = document.getElementById('ordersList');
+            
+            if (orders.length === 0) {
+                ordersList.innerHTML = '<div class="empty-orders">暂无订单</div>';
+                return;
+            }
+            
+            // 按时间倒序排序（最新的订单在前面）
+            const sortedOrders = [...orders].sort((a, b) => {
+                return new Date(b.timestamp) - new Date(a.timestamp);
+            });
+
+            let html = '';
+            sortedOrders.forEach(order => {
+                html += createOrderHTML(order);
+            });
+            
+            ordersList.innerHTML = html;
+        }
+
+        // 创建单个订单的HTML
+        function createOrderHTML(order) {
+            // 计算菜品小计
+            let itemsHTML = '';
+            order.items.forEach(item => {
+                const subtotal = (item.price * item.quantity).toFixed(2);
+                itemsHTML += `
+                    <div class="item">
+                        <span class="item-name">${item.name}</span>
+                        <div class="item-details">
+                            <span class="item-quantity">x${item.quantity}</span>
+                            <span class="item-price">¥${subtotal}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return `
+                <div class="order-item">
+                    <div class="order-header">
+                        <div class="order-id">${order.order_id}</div>
+                        <div class="order-info">
+                            <span class="table-number">桌号：${order.table_number}号桌</span>
+                            <span class="order-time">${order.timestamp}</span>
+                            <span class="status ${order.status}">${order.status === 'pending' ? '待处理' : '已完成'}</span>
+                        </div>
+                    </div>
+                    <div class="items-list">
+                        ${itemsHTML}
+                    </div>
+                    <div class="order-total">总计：¥${order.total.toFixed(2)}</div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+[
+  {
+    "order_id": "ORDER_1768955603_1",
+    "table_number": "1",
+    "items": [
+      {
+        "id": 2,
+        "name": "鱼香肉丝",
+        "price": 32,
+        "category": "hot",
+        "image": "https://via.placeholder.com/200x120/4ecdc4/ffffff?text=鱼香肉丝",
+        "quantity": 1
+      }
+    ],
+    "total": 32,
+    "timestamp": "2026-01-21T00:33:24.004Z",
+    "status": "pending"
+  }
+]

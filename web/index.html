@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线点餐系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>欢迎点餐</h1>
+            <div class="table-info">
+                <span>桌号：</span>
+                <select id="tableSelect">
+                    <option value="1">1号桌</option>
+                    <option value="2">2号桌</option>
+                    <option value="3">3号桌</option>
+                    <option value="4">4号桌</option>
+                    <option value="5">5号桌</option>
+                </select>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="menu-section">
+                <h2>菜单</h2>
+                <div class="menu-categories">
+                    <button class="category-btn active" data-category="all">全部</button>
+                    <button class="category-btn" data-category="hot">热菜</button>
+                    <button class="category-btn" data-category="cold">凉菜</button>
+                    <button class="category-btn" data-category="soup">汤品</button>
+                    <button class="category-btn" data-category="drink">饮品</button>
+                </div>
+                
+                <div class="menu-items" id="menuItems">
+                    <!-- 菜品将通过JavaScript动态生成 -->
+                </div>
+            </div>
+
+            <div class="order-section">
+                <h2>我的订单</h2>
+                <div class="order-list" id="orderList">
+                    <p class="empty-order">暂无订单</p>
+                </div>
+                <div class="order-summary">
+                    <div class="total">
+                        <span>总计：</span>
+                        <span class="total-price">¥0.00</span>
+                    </div>
+                    <button class="submit-btn" id="submitOrder">提交订单</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="qr-code-section">
+        <h3>手机扫码点餐</h3>
+        <div class="qr-code">
+            <img src="https://via.placeholder.com/180x180/4ecdc4/ffffff?text=点餐二维码" alt="点餐二维码">
+        </div>
+        <p>请使用手机扫描上方二维码进行点餐</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
