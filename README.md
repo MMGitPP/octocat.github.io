@@ -1,3 +1,2 @@
-layout: page
-title: "PAGE-TITLE"
-permalink: /URL-PATH
+尝试创建一个远程访问的Web点餐程序，在后台能够看到点餐进度
+这个代码是无法使用的
